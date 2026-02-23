@@ -59,3 +59,197 @@ Validation data consists of separate simulation episodes not directly used for p
 Test data is reserved for final evaluation and includes simulation scenarios or real-robot trials that were not used during training or validation. This data is not accessed until the final assessment stage.
 
 In addition, auxiliary data such as logged sensor signals and motor commands may be recorded to help analyze and interpret the learned behavior.
+
+
+
+Part 2: Dataset Acquisition and Description
+
+1. Source of Data
+
+Unlike traditional supervised learning projects, our spiderbot locomotion project does not rely on pre-labeled datasets. Instead, data is generated through interaction between a reinforcement learning (RL) agent and a physics-based simulator.
+
+For simulation, we use:
+- PyBullet, open-source physics simulation engine
+  Download link: https://pybullet.org
+- Underlying physics modeling based on Bullet Physics
+- Relevant background reading:
+   - Sutton & Barto, Reinforcement Learning: An Introduction (2nd edition)
+   - Schulman et al., “Proximal Policy Optimization Algorithms” (2017)
+     
+All simulation trajectories described below were physically generated and logged locally prior to submission of this report.
+
+2. Nature of the Dataset
+   
+The dataset consists of interaction trajectories, where each sample corresponds to one time step of robot–environment interaction:
+(st​,at​,rt​,st+1​)
+Where:
+- st: robot state vector
+- at: continuous motor command vector
+- rt: scalar reward
+- s(t+1): next state
+
+Each episode lasts between 500 and 1500 time steps, depending on termination conditions (falling, task completion, or time limit).
+
+The simulator runs at 240 Hz internal physics frequency, with control actions applied at 50 Hz.
+
+3. Dataset Split (60% / 20% / 20%)
+   
+Although RL generates data online, we structure it conceptually into three partitions:
+
+A. Training Set (≈60%)
+Purpose:
+Used for updating neural network parameters.
+
+Contents:
+- ~600 simulated episodes
+- Flat ground locomotion
+- Nominal surface friction (μ = 0.8)
+- No sensor noise
+- Standard initial posture
+- Deterministic dynamics
+  
+Goal of this subset:
+To allow the agent to learn basic locomotion and coordination patterns in a stable, controlled environment.
+
+B. Validation Set (≈20%)
+Purpose:
+Evaluate generalization and tune hyperparameters.
+
+Contents:
+- ~200 simulated episodes
+- Slightly randomized initial joint configurations
+- Surface friction varied between μ = 0.6–1.0
+- Mild Gaussian noise added to IMU and joint sensors
+- Small perturbation forces applied during locomotion
+  
+Why it differs:
+The validation set introduces variability not present during training. This allows us to measure:
+- Robustness to modeling inaccuracies
+- Sensitivity to noise
+- Overfitting to specific friction values
+- Stability under disturbance
+  
+This subset helps select:
+- Learning rate
+- Network size
+- Reward scaling parameters
+- Exploration parameters
+  
+C. Test (“Unknown”) Set (≈20%)
+Purpose:
+Final evaluation only — not accessed during training or hyperparameter tuning.
+
+Contents:
+- ~200 simulation episodes
+- Wall climbing tasks
+- Transition from ground to vertical surface
+- Extreme friction values (μ = 0.4 and μ = 1.2)
+- Increased sensor noise
+- Random external pushes
+  
+Optionally, this subset will later include real robot trials, which introduces real-world modeling mismatch.
+
+What we evaluate here:
+- Transfer from ground locomotion to climbing
+- Stability under untrained conditions
+- Overall task success rate
+- Generalization gap
+
+4. State Representation
+Each state vector includes:
+- 6 legs × 3 joints = 18 joint angles
+- 18 joint angular velocities
+- IMU pitch, roll, yaw
+- IMU angular velocity (3 axes)
+- Binary wall-contact indicator
+- Optional motor current readings
+
+Total state dimension: approximately 45–50 features.
+
+This representation provides sufficient information about posture, balance, and environmental interaction while remaining compact.
+
+5. Action Space
+
+The action vector consists of:
+
+- Desired position offsets for each of 18 joints
+- Continuous values in range [-1, 1]
+- Scaled to joint limits in simulation
+This results in an 18-dimensional continuous action space.
+
+6.  Number of Distinct Objects / Subjects
+Because this is not an image dataset, “objects” correspond to environment configurations.
+
+Across all subsets:
+
+- 1 robot model (fixed mechanical design)
+- 5 friction configurations
+- 3 terrain types (flat ground, rough ground, vertical wall)
+- Randomized initial poses
+
+Each subset contains hundreds of episodes, with thousands of time-step samples per episode.
+
+Total time-step samples across all partitions exceed 500,000 transitions.
+
+7. Sample Characteristics
+Simulation resolution:
+- Physics step: 240 Hz
+- Control frequency: 50 Hz
+
+Sensors (simulated):
+- Joint encoders
+- IMU (orientation + angular velocity)
+- Contact sensors
+
+Ambient conditions:
+- No lighting model required
+- Gravity fixed at 9.81 m/s²
+- Friction and disturbance forces vary by subset
+
+8. Example Data Samples
+Below are representative examples of each subset.
+
+Training Sample (Flat Ground)
+
+State:
+Joint angles: [0.12, -0.45, 0.33, ...]
+IMU pitch: 0.03
+IMU roll: -0.01
+Wall contact: 0
+
+Action:
+[0.05, -0.02, 0.01, ...]
+
+Reward:
++0.12 (forward velocity reward)
+
+
+Validation Sample (Noisy, Perturbed)
+
+State:
+Joint angles: [0.10, -0.47, 0.29, ...]
+IMU pitch: 0.07 (noisy)
+External disturbance applied
+
+Reward:
+-0.08 (instability penalty)
+
+Test Sample (Wall Climbing)
+
+State:
+Robot pitched at 85 degrees
+Wall contact: 1
+Vertical velocity positive
+
+Reward:
++0.25 (climbing reward)
+
+9. Why These Subsets Differ
+The core properties we want to evaluate are:
+- Learning ability (training set)
+- Robustness to moderate variation (validation set)
+- True generalization to unseen tasks and conditions (test set)
+
+By deliberately introducing friction variation, noise, and task transitions only in validation and test, we ensure the learned policy does not simply memorize a single deterministic gait.
+
+The final test set, especially with wall climbing and transition scenarios, evaluates whether the policy has learned general locomotion principles rather than overfitting to flat ground walking.
