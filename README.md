@@ -157,8 +157,8 @@ What we evaluate here:
 
 4. State Representation
 Each state vector includes:
-- 6 legs × 3 joints = 18 joint angles
-- 18 joint angular velocities
+- 6 legs × 2 joints = 12 joint angles
+- 12 joint angular velocities
 - IMU pitch, roll, yaw
 - IMU angular velocity (3 axes)
 - Binary wall-contact indicator
@@ -172,10 +172,10 @@ This representation provides sufficient information about posture, balance, and 
 
 The action vector consists of:
 
-- Desired position offsets for each of 18 joints
+- Desired position offsets for each of 12 joints
 - Continuous values in range [-1, 1]
 - Scaled to joint limits in simulation
-This results in an 18-dimensional continuous action space.
+This results in an 12-dimensional continuous action space.
 
 6.  Number of Distinct Objects / Subjects
 Because this is not an image dataset, “objects” correspond to environment configurations.
