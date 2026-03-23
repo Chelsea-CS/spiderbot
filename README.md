@@ -253,3 +253,232 @@ The core properties we want to evaluate are:
 By deliberately introducing friction variation, noise, and task transitions only in validation and test, we ensure the learned policy does not simply memorize a single deterministic gait.
 
 The final test set, especially with wall climbing and transition scenarios, evaluates whether the policy has learned general locomotion principles rather than overfitting to flat ground walking.
+
+
+Part 3: Interim Results and Current Challenges
+
+3.1 Current Progress Overview
+
+At this stage of the project, the primary focus has been on building a reliable simulation and control pipeline before introducing reinforcement learning. Rather than immediately applying RL to the full six-legged robot, we adopted a progressive system-building strategy, where complexity is gradually increased in a controlled manner.
+
+This approach is motivated by the fact that reinforcement learning is highly sensitive to environment instability. If the underlying simulation or control interface is not well-behaved, RL training can fail in ways that are difficult to diagnose. Therefore, our current progress prioritizes system correctness, stability, and interpretability over early performance results.
+
+So far, we have decomposed the full system into four major components:
+
+1) Robot Model (PyBullet)
+2) Physics Environment
+3) Low-Level Control Interface
+4) RL Environment Wrapper (Gym-style)
+   
+We are currently in the process of validating these components incrementally.
+
+3.2 Incremental Robot Construction Strategy
+
+Instead of directly simulating the full six-legged spiderbot, we implemented a staged construction process:
+
+Step 1: Single Joint Control
+We first validated whether a single revolute joint behaves correctly in PyBullet. This includes:
+- Verifying joint limits
+- Ensuring stable torque/position control
+- Observing oscillations or instability
+  
+Interim Result:
+The single joint responds correctly to position commands, but we observed minor oscillations when using high gains in position control. This suggests that controller tuning (e.g., PD gains) will be important for stability later.
+
+Step 2: Single Leg (2 Joints)
+
+Next, we constructed a minimal leg consisting of two joints:
+- Hip joint
+- Knee joint
+This allowed us to study coordination between joints, which is critical for locomotion.
+
+Interim Result:
+- The leg can execute simple periodic motions (e.g., lifting and lowering).
+- However, coordination between joints is nontrivial:
+   - Poor timing leads to unrealistic motion
+   - Certain configurations cause self-collision or instability
+This confirms that even at a small scale, motion design is already complex, supporting the motivation for RL-based control.
+
+Step 3: Multi-Leg Coordination (2–3 Legs)
+We then extended the system to include multiple legs attached to a central body.
+Observations:
+   - Adding more legs introduces:
+   - Increased contact complexity
+   - Inter-leg interference
+   - Balance challenges
+- The robot often becomes unstable when multiple legs move simultaneously without coordination.
+
+Key Insight:
+Naively scaling up control from one leg to multiple legs does not work. This highlights the need for a centralized policy (e.g., neural network) that can coordinate all joints jointly.
+
+Step 4: Full Six-Leg Robot (In Progress)
+We are currently working toward integrating all six legs into a complete spiderbot model.
+Challenges at this stage include:
+- Maintaining balance under gravity
+- Preventing collapse at initialization
+- Ensing proper contact behavior with the ground
+At this point, the robot can be loaded into simulation, but stable standing and locomotion are not yet achieved.
+
+3.3 Simulator Architecture Implementation
+
+The simulation system has been structured into four layers, consistent with standard reinforcement learning frameworks:
+
+A. Robot Model
+- Defined using PyBullet URDF
+Includes:
+   - Link masses and inertias
+   - Joint limits
+   - Collision shapes
+Challenge:
+Accurate physical parameters (mass, inertia, friction) significantly affect behavior. Small errors can lead to unrealistic dynamics.
+
+B. Physics World
+- Gravity: 9.81 m/s²
+- Ground plane with configurable friction
+- Time step: 240 Hz
+
+Observation:
+Contact dynamics are one of the most sensitive aspects of the simulation. Slight changes in friction or time step can drastically change behavior.
+
+C. Control Interface
+
+We implemented a basic control interface that sends:
+- Target joint positions (scaled from [-1, 1])
+- Updated at 50 Hz
+  
+Current Limitation:
+- Control is still relatively low-level
+- No trajectory smoothing or advanced controllers yet
+This may lead to jerky motions and instability.
+
+D. RL Environment Wrapper (Gym-style)
+We are currently building a Gym-compatible environment that defines:
+- observation (state vector)
+- action (joint commands)
+- reward
+- done
+- reset
+
+Status:
+The structure is partially implemented, but reward design and termination conditions are still under development.
+
+3.4 Early Behavioral Observations
+Although RL has not yet been fully applied, we conducted preliminary experiments using simple scripted control signals.
+
+Standing Behavior
+- The robot struggles to maintain a stable standing posture.
+- Small asymmetries in joint angles can cause tipping.
+
+Implication:
+Balance is a nontrivial problem even before locomotion.
+
+Movement Attempts
+- Periodic joint motion produces movement, but:
+   - Motion is inefficient
+   - Robot often drifts or rotates unintentionally
+   - Stability is poor
+This reinforces the idea that hand-designed gaits are difficult to scale, especially for complex morphologies.
+
+3.5 Key Challenges
+At this stage, several major challenges have emerged.
+
+Challenge 1: Stability of the Simulation
+One of the most critical issues is maintaining stable physics behavior.
+
+Problems encountered:
+- Oscillations in joints
+- Sudden collapses due to contact instability
+- Sensitivity to parameter tuning (mass, friction, damping)
+
+Why this matters:
+Reinforcement learning assumes a reasonably stable environment. If the simulator behaves unpredictably, the agent cannot learn meaningful policies.
+
+Challenge 2: High-Dimensional Action Space
+The robot has:
+- 12 joints → 12-dimensional continuous action space
+
+This creates:
+- Large search space for RL
+- Difficulty in coordinated control
+Even in manual experiments, coordinating all joints simultaneously is extremely challenging.
+
+Challenge 3: Reward Function Design
+
+Designing a reward function is proving to be one of the most difficult aspects.
+
+Current considerations include:
+- Forward velocity (for walking)
+- Upward velocity (for climbing)
+- Stability penalties (tilt, angular velocity)
+- Energy efficiency
+
+Difficulty:
+- Too simple → agent learns undesirable behaviors (e.g., jerky motion)
+- Too complex → learning becomes unstable or slow
+This highlights the classic RL problem of reward shaping.
+
+Challenge 4: Sim-to-Real Gap (Anticipated)
+
+Although we are currently working in simulation, we anticipate future challenges in transferring policies to the real robot.
+Potential issues:
+- Differences in friction
+- Sensor noise
+- Actuator delays
+
+This motivates the use of:
+- Noise injection (already included in validation set)
+- Domain randomization
+
+Challenge 5: Initialization and Reset Conditions
+
+Resetting the robot into a valid initial state is nontrivial.
+Problems:
+- Robot may start in unstable configurations
+- Small errors at reset can lead to immediate failure
+
+This affects: Training stability, Reproducibility of results
+
+3.6 Next Steps
+Based on current progress, the next phase of the project will focus on:
+
+1. Achieving Stable Standing
+Before locomotion, we aim to:
+- Design a fixed posture that maintains balance
+- Possibly use a simple controller (non-RL) as a baseline
+
+2. Controlled Locomotion (Pre-RL)
+We will attempt:
+- Simple periodic gait patterns
+- Manual tuning of joint trajectories
+This serves as a baseline for comparison with RL.
+
+3. Finalizing RL Environment
+- Complete Gym wrapper
+- Define reward function
+- Implement termination conditions
+  
+4. Introducing Reinforcement Learning (PPO)
+We plan to use:
+Proximal Policy Optimization (PPO)
+Neural network policy
+Initial experiments will focus on:
+Flat ground locomotion only
+Simplified reward structure
+
+5. Gradual Complexity Increase
+Following a curriculum learning approach:
+1) Flat ground walking
+2) Uneven terrain
+3) Wall contact
+4) Ground-to-wall transitions
+
+3.7 Summary
+
+In summary, the project has progressed from conceptual design to early-stage system implementation. While reinforcement learning has not yet been fully deployed, significant groundwork has been established:
+
+- Modular simulator architecture
+- Incremental robot construction
+- Preliminary control experiments
+  
+The most important insight so far is that building a stable and controllable simulation is itself a major challenge, and is a necessary prerequisite for successful reinforcement learning.
+The current phase represents a critical point in the project timeline, where addressing these foundational challenges will determine the success of later RL-based approaches. Continued iteration, debugging, and consultation with course staff will be essential in moving forward.
