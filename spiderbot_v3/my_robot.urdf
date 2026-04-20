@@ -1,0 +1,383 @@
+<?xml version="1.0"?>
+<robot name="spdrbot">
+
+  <link name="body">
+    <visual>
+      <geometry><box size="0.48 0.36 0.075"/></geometry>
+      <material name="gray"><color rgba="0.45 0.45 0.45 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.48 0.36 0.075"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.02" iyy="0.02" izz="0.03"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- ===== FRONT-LEFT ===== -->
+  <link name="fl_hip_servo">
+    <visual>
+      <geometry><box size="0.06 0.04 0.04"/></geometry>
+      <material name="servo"><color rgba="0.8 0.2 0.0 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.06 0.04 0.04"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fl_hip_joint" type="revolute">
+    <parent link="body"/>
+    <child link="fl_hip_servo"/>
+    <origin xyz="0.20 0.16 -0.0375" rpy="0 -0.6 0.785"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="15" velocity="3"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <link name="fl_upper">
+    <visual>
+      <origin xyz="0 0 -0.105" rpy="0 0 0"/>
+      <geometry><box size="0.035 0.035 0.21"/></geometry>
+      <material name="dk"><color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.105" rpy="0 0 0"/>
+      <geometry><box size="0.035 0.035 0.21"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.10"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.00005"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fl_upper_joint" type="fixed">
+    <parent link="fl_hip_servo"/>
+    <child link="fl_upper"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="fl_knee_servo">
+    <visual>
+      <geometry><box size="0.055 0.038 0.038"/></geometry>
+      <material name="servo2"><color rgba="0.0 0.5 0.8 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.055 0.038 0.038"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fl_knee_joint" type="revolute">
+    <parent link="fl_upper"/>
+    <child link="fl_knee_servo"/>
+    <origin xyz="0 0 -0.21" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5" upper="0.1" effort="15" velocity="3"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <link name="fl_lower">
+    <visual>
+      <origin xyz="0 0 -0.135" rpy="0 0 0"/>
+      <geometry><box size="0.030 0.030 0.27"/></geometry>
+      <material name="dk"><color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.135" rpy="0 0 0"/>
+      <geometry><box size="0.030 0.030 0.27"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.075"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.00005"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fl_lower_joint" type="fixed">
+    <parent link="fl_knee_servo"/>
+    <child link="fl_lower"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===== FRONT-RIGHT ===== -->
+  <link name="fr_hip_servo">
+    <visual>
+      <geometry><box size="0.06 0.04 0.04"/></geometry>
+      <material name="servo"><color rgba="0.8 0.2 0.0 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.06 0.04 0.04"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fr_hip_joint" type="revolute">
+    <parent link="body"/>
+    <child link="fr_hip_servo"/>
+    <origin xyz="0.20 -0.16 -0.0375" rpy="0 -0.6 -0.785"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="15" velocity="3"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <link name="fr_upper">
+    <visual>
+      <origin xyz="0 0 -0.105" rpy="0 0 0"/>
+      <geometry><box size="0.035 0.035 0.21"/></geometry>
+      <material name="dk"><color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.105" rpy="0 0 0"/>
+      <geometry><box size="0.035 0.035 0.21"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.10"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.00005"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fr_upper_joint" type="fixed">
+    <parent link="fr_hip_servo"/>
+    <child link="fr_upper"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="fr_knee_servo">
+    <visual>
+      <geometry><box size="0.055 0.038 0.038"/></geometry>
+      <material name="servo2"><color rgba="0.0 0.5 0.8 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.055 0.038 0.038"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fr_knee_joint" type="revolute">
+    <parent link="fr_upper"/>
+    <child link="fr_knee_servo"/>
+    <origin xyz="0 0 -0.21" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5" upper="0.1" effort="15" velocity="3"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <link name="fr_lower">
+    <visual>
+      <origin xyz="0 0 -0.135" rpy="0 0 0"/>
+      <geometry><box size="0.030 0.030 0.27"/></geometry>
+      <material name="dk"><color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.135" rpy="0 0 0"/>
+      <geometry><box size="0.030 0.030 0.27"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.075"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.00005"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fr_lower_joint" type="fixed">
+    <parent link="fr_knee_servo"/>
+    <child link="fr_lower"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===== REAR-LEFT ===== -->
+  <link name="rl_hip_servo">
+    <visual>
+      <geometry><box size="0.06 0.04 0.04"/></geometry>
+      <material name="servo"><color rgba="0.8 0.2 0.0 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.06 0.04 0.04"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rl_hip_joint" type="revolute">
+    <parent link="body"/>
+    <child link="rl_hip_servo"/>
+    <origin xyz="-0.20 0.16 -0.0375" rpy="0 -0.6 2.356"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="15" velocity="3"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <link name="rl_upper">
+    <visual>
+      <origin xyz="0 0 -0.105" rpy="0 0 0"/>
+      <geometry><box size="0.035 0.035 0.21"/></geometry>
+      <material name="dk"><color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.105" rpy="0 0 0"/>
+      <geometry><box size="0.035 0.035 0.21"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.10"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.00005"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rl_upper_joint" type="fixed">
+    <parent link="rl_hip_servo"/>
+    <child link="rl_upper"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rl_knee_servo">
+    <visual>
+      <geometry><box size="0.055 0.038 0.038"/></geometry>
+      <material name="servo2"><color rgba="0.0 0.5 0.8 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.055 0.038 0.038"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rl_knee_joint" type="revolute">
+    <parent link="rl_upper"/>
+    <child link="rl_knee_servo"/>
+    <origin xyz="0 0 -0.21" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5" upper="0.1" effort="15" velocity="3"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <link name="rl_lower">
+    <visual>
+      <origin xyz="0 0 -0.135" rpy="0 0 0"/>
+      <geometry><box size="0.030 0.030 0.27"/></geometry>
+      <material name="dk"><color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.135" rpy="0 0 0"/>
+      <geometry><box size="0.030 0.030 0.27"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.075"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.00005"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rl_lower_joint" type="fixed">
+    <parent link="rl_knee_servo"/>
+    <child link="rl_lower"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===== REAR-RIGHT ===== -->
+  <link name="rr_hip_servo">
+    <visual>
+      <geometry><box size="0.06 0.04 0.04"/></geometry>
+      <material name="servo"><color rgba="0.8 0.2 0.0 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.06 0.04 0.04"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rr_hip_joint" type="revolute">
+    <parent link="body"/>
+    <child link="rr_hip_servo"/>
+    <origin xyz="-0.20 -0.16 -0.0375" rpy="0 -0.6 -2.356"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.5" upper="0.5" effort="15" velocity="3"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <link name="rr_upper">
+    <visual>
+      <origin xyz="0 0 -0.105" rpy="0 0 0"/>
+      <geometry><box size="0.035 0.035 0.21"/></geometry>
+      <material name="dk"><color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.105" rpy="0 0 0"/>
+      <geometry><box size="0.035 0.035 0.21"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.10"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.00005"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rr_upper_joint" type="fixed">
+    <parent link="rr_hip_servo"/>
+    <child link="rr_upper"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rr_knee_servo">
+    <visual>
+      <geometry><box size="0.055 0.038 0.038"/></geometry>
+      <material name="servo2"><color rgba="0.0 0.5 0.8 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.055 0.038 0.038"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rr_knee_joint" type="revolute">
+    <parent link="rr_upper"/>
+    <child link="rr_knee_servo"/>
+    <origin xyz="0 0 -0.21" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5" upper="0.1" effort="15" velocity="3"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <link name="rr_lower">
+    <visual>
+      <origin xyz="0 0 -0.135" rpy="0 0 0"/>
+      <geometry><box size="0.030 0.030 0.27"/></geometry>
+      <material name="dk"><color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.135" rpy="0 0 0"/>
+      <geometry><box size="0.030 0.030 0.27"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.075"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.00005"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rr_lower_joint" type="fixed">
+    <parent link="rr_knee_servo"/>
+    <child link="rr_lower"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>

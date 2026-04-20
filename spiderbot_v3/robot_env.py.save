@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<robot name="spdrbot">
+
+  <link name="body">
+    <visual>
+      <geometry><box size="0.18 0.14 0.025"/></geometry>
+      <material name="gray"><color rgba="0.5 0.5 0.5 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.18 0.14 0.025"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.4"/>
+      <inertia ixx="0.002" iyy="0.002" izz="0.003" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- FRONT LEFT -->
+  <link name="fl_upper">
+    <visual>
+      <origin xyz="0.03 0.03 -0.04"/>
+      <geometry><box size="0.014 0.014 0.08"/></geometry>
+      <material name="dark"><color rgba="0.25 0.25 0.25 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0.03 0.03 -0.04"/>
+      <geometry><box size="0.014 0.014 0.08"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.04"/>
+      <inertia ixx="0.00005" iyy="0.00005" izz="0.000005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fl_hip_joint" type="revolute">
+    <parent link="body"/>
+    <child link="fl_upper"/>
+    <origin xyz="0.06 0.05 -0.012" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.6" upper="0.6" effort="5" velocity="3"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <link name="fl_lower">
+    <visual>
+      <origin xyz="0 0 -0.05"/>
+      <geometry><box size="0.012 0.012 0.10"/></geometry>
+      <material name="dark"><color rgba="0.25 0.25 0.25 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.05"/>
+      <geometry><box size="0.012 0.012 0.10"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.025"/>
+      <inertia ixx="0.00005" iyy="0.00005" izz="0.000005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fl_knee_joint" type="revolute">
+    <parent link="fl_upper"/>
+    <child link="fl_lower"/>
+    <origin xyz="0.03 0.03 -0.08" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.4" upper="0.2" effort="5" velocity="3"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <!-- FRONT RIGHT -->
+  <link name="fr_upper">
+    <visual>
+      <origin xyz="0.03 -0.03 -0.04"/>
+      <geometry><box size="0.014 0.014 0.08"/></geometry>
+      <material name="dark"><color rgba="0.25 0.25 0.25 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0.03 -0.03 -0.04"/>
+      <geometry><box size="0.014 0.014 0.08"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.04"/>
+      <inertia ixx="0.00005" iyy="0.00005" izz="0.000005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fr_hip_joint" type="revolute">
+    <parent link="body"/>
+    <child link="fr_upper"/>
+    <origin xyz="0.06 -0.05 -0.012" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.6" upper="0.6" effort="5" velocity="3"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <link name="fr_lower">
+    <visual>
+      <origin xyz="0 0 -0.05"/>
+      <geometry><box size="0.012 0.012 0.10"/></geometry>
+      <material name="dark"><color rgba="0.25 0.25 0.25 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.05"/>
+      <geometry><box size="0.012 0.012 0.10"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.025"/>
+      <inertia ixx="0.00005" iyy="0.00005" izz="0.000005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="fr_knee_joint" type="revolute">
+    <parent link="fr_upper"/>
+    <child link="fr_lower"/>
+    <origin xyz="0.03 -0.03 -0.08" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.4" upper="0.2" effort="5" velocity="3"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <!-- REAR LEFT -->
+  <link name="rl_upper">
+    <visual>
+      <origin xyz="-0.03 0.03 -0.04"/>
+      <geometry><box size="0.014 0.014 0.08"/></geometry>
+      <material name="dark"><color rgba="0.25 0.25 0.25 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="-0.03 0.03 -0.04"/>
+      <geometry><box size="0.014 0.014 0.08"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.04"/>
+      <inertia ixx="0.00005" iyy="0.00005" izz="0.000005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rl_hip_joint" type="revolute">
+    <parent link="body"/>
+    <child link="rl_upper"/>
+    <origin xyz="-0.06 0.05 -0.012" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.6" upper="0.6" effort="5" velocity="3"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <link name="rl_lower">
+    <visual>
+      <origin xyz="0 0 -0.05"/>
+      <geometry><box size="0.012 0.012 0.10"/></geometry>
+      <material name="dark"><color rgba="0.25 0.25 0.25 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.05"/>
+      <geometry><box size="0.012 0.012 0.10"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.025"/>
+      <inertia ixx="0.00005" iyy="0.00005" izz="0.000005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rl_knee_joint" type="revolute">
+    <parent link="rl_upper"/>
+    <child link="rl_lower"/>
+    <origin xyz="-0.03 0.03 -0.08" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.4" upper="0.2" effort="5" velocity="3"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <!-- REAR RIGHT -->
+  <link name="rr_upper">
+    <visual>
+      <origin xyz="-0.03 -0.03 -0.04"/>
+      <geometry><box size="0.014 0.014 0.08"/></geometry>
+      <material name="dark"><color rgba="0.25 0.25 0.25 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="-0.03 -0.03 -0.04"/>
+      <geometry><box size="0.014 0.014 0.08"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.04"/>
+      <inertia ixx="0.00005" iyy="0.00005" izz="0.000005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rr_hip_joint" type="revolute">
+    <parent link="body"/>
+    <child link="rr_upper"/>
+    <origin xyz="-0.06 -0.05 -0.012" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.6" upper="0.6" effort="5" velocity="3"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <link name="rr_lower">
+    <visual>
+      <origin xyz="0 0 -0.05"/>
+      <geometry><box size="0.012 0.012 0.10"/></geometry>
+      <material name="dark"><color rgba="0.25 0.25 0.25 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.05"/>
+      <geometry><box size="0.012 0.012 0.10"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.025"/>
+      <inertia ixx="0.00005" iyy="0.00005" izz="0.000005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="rr_knee_joint" type="revolute">
+    <parent link="rr_upper"/>
+    <child link="rr_lower"/>
+    <origin xyz="-0.03 -0.03 -0.08" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.4" upper="0.2" effort="5" velocity
